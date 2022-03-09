@@ -2,10 +2,11 @@
 - name: Check for base system config lockfile
   stat: path="/mnt/.nvm_mountpoints"
   register: basic_config_lock
-- include: filesystem.yml
-  when: basic_config_lock.stat.exists == False
-- include: networking.yml
-- include: kubernetes.yml
-- include: nfs.yml
-- include: fan-support.yml
+- import_tasks: filesystem.yml
+  when: basic_config_lock.stat.exists == False or fs_reset is defined
+- import_tasks: packages.yml
+- import_tasks: networking.yml
+- import_tasks: kubernetes.yml
+- import_tasks: nfs.yml
+- import_tasks: fan-support.yml
   when: settings.pimoroni_fans_enabled == "enabled"

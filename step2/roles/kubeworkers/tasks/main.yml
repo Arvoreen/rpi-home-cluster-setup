@@ -1,2 +1,33 @@
 ---
-- include: worker-setup.yml
+- name: Reset Cluster
+  ansible.builtin.shell:
+    cmd: |
+      kubeadm reset -f
+      rm -f $HOME/.kube/config
+  when: RESET is defined
+    
+- name: Generate join token
+  shell: kubeadm token create --print-join-command
+  register: kubeadm_join_cmd
+  delegate_to: "{{ groups['primary_master'][0] }}"
+
+- set_fact:
+    kubeadm_join: "{{ kubeadm_join_cmd.stdout }}"
+
+- name: Run kubeadm join
+  shell: "{{ kubeadm_join }}"
+
+- name: Copy kubectl config to workers
+  ansible.builtin.copy:
+    src: static/kubectl.conf
+    dest: /root/kubectl-config
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Copying kubeconfig file
+  ansible.builtin.shell:
+    cmd: |
+      mkdir -p $HOME/.kube
+      cp -f /root/kubectl-config $HOME/.kube/config
+      chown $(id -u):$(id -g) $HOME/.kube/config

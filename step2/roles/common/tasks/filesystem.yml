@@ -20,6 +20,7 @@
   community.general.filesystem:
     dev: /dev/mmcblk0p2
     fstype: ext4
+    force: yes
   ignore_errors: yes
 
 - name: Re-mount old data partition

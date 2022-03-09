@@ -17,21 +17,3 @@
     opts: nofail,noatime,nolock,tcp,actimeo=1800
     state: mounted
     boot: yes
-
-- name: Mount NFS torrent
-  ansible.posix.mount:
-    src: "{{settings.nfs_host}}:{{settings.nfs_torrent_path}}"
-    path: /mnt/drobo-storage/docker-volumes/torrent
-    fstype: nfs
-    opts: nofail,noatime,nolock,tcp,actimeo=1800
-    state: mounted
-    boot: yes
-
-- name: Mount NFS adguard
-  ansible.posix.mount:
-    src: "{{settings.nfs_host}}:{{settings.nfs_adguard_path}}"
-    path: /mnt/drobo-storage/docker-volumes/adguard
-    fstype: nfs
-    opts: nofail,noatime,nolock,tcp,actimeo=1800
-    state: mounted
-    boot: yes

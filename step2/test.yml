@@ -1,0 +1,20 @@
+- hosts: localhost
+  vars:
+     contents: "{{ query('file', 'static/token_file') }}"
+
+  tasks:
+     - name: debug
+       debug: msg="line is {{ item }}"
+       loop: "{{ contents }}"
+
+     - name: fact
+       set_fact:
+         mytoken: "{{ contents | regex_search(regexp, '([^\\s]+\\s){4}([^\\s]+)','\\1') | first }}"
+         cacheable: yes
+
+     - name: Dump
+       delegate_to: localhost
+       run_once: true
+       copy:
+         content: "{{ hostvars[inventory_hostname] | to_nice_json }}"
+         dest: /tmp/setup-dump.json

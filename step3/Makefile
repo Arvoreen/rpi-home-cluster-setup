@@ -26,4 +26,4 @@ lint:
 
 show:
 	@echo Available services:
-	@kubectl get svc -A | grep -E '(adguard|traefik|torrent)' | awk '{print $$2 ":     \t"$$5}'
+	@kubectl get svc -A | grep -E '(traefik)' | awk '{print $$2 ":     \t"$$5}'

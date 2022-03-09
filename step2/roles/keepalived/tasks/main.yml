@@ -1,0 +1,15 @@
+- name: Install keepalived
+  ansible.builtin.package:
+    name:
+      - keepalived
+
+- name: Create keepalived conf directory
+  file:
+    path: /etc/keepalived
+    state: directory
+
+- name: Modify keepalived.conf
+  template: src=keepalived.conf.j2 dest=/etc/keepalived/keepalived.conf
+
+- name: Restart keepalived
+  shell: rc-update add keepalived && rc-service keepalived restart

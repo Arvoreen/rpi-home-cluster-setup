@@ -1,9 +1,14 @@
-[masters]
-pi0 ansible_host=192.168.50.132 # Pi0
+[primary_master]
+k8sm1.internal.martinescu.org ansible_host=192.168.7.63 if="eth0" lb_role=MASTER priority=100 node_name=k8sm1 
+
+[other_masters]
+k8sm2.internal.martinescu.org ansible_host=192.168.7.62 if="eth0" lb_role=BACKUP priority=80 node_name=k8sm2 
 
 [workers]
-pi1 ansible_host=192.168.50.135 # Pi1
-pi3 ansible_host=192.168.50.60  # Pi3
-pi4 ansible_host=192.168.50.36  # Pi4
-pi2 ansible_host=192.168.50.85  # Pi2
-pi5 ansible_host=192.168.50.230 # Pi5
+k8sw1.internal.martinescu.org ansible_host=192.168.7.59
+k8sw2.internal.martinescu.org ansible_host=192.168.7.61
+k8sw3.internal.martinescu.org ansible_host=192.168.7.60
+
+[lb_nodes]
+k8sm1.internal.martinescu.org
+k8sm2.internal.martinescu.org

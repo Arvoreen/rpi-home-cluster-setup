@@ -1,0 +1,19 @@
+# kubernetes API load balanced VIP for HA installations
+kubeapiserver: k8s.internal.martinescu.org
+kubernetes_cluster_label: rpi-cluster
+
+keepalived_vip: 192.168.7.58
+
+# Kubernetes Kubeadm Cluster Configuration
+kubeadm_config_options:
+    apiVersion: kubeadm.k8s.io/v1beta3
+    kind: ClusterConfiguration
+    kubernetesVersion: stable-1
+    apiServer:
+        certSANs:
+            - "{{ kubeapiserver }}"
+    controlPlaneEndpoint: "{{ kubeapiserver }}:6443"
+    networking:
+        podSubnet: 10.244.0.0/16
+    clusterName: "{{ kubernetes_cluster_label }}"
+

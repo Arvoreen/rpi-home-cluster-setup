@@ -1,0 +1,31 @@
+- name: Fix repository list
+  ansible.builtin.copy:
+    src: static/repositories
+    dest: /mnt/etc/apk
+
+- name: APK Update cache
+  community.general.apk:
+   update_cache: yes
+
+- name: Install kubernetes
+  ansible.builtin.package:
+    state: latest
+    name:  kubernetes
+
+- name: Install docker
+  ansible.builtin.package:
+    state: latest
+    name:  docker
+
+- name: Install cni-plugins
+  ansible.builtin.package:
+    state: latest
+    name:   cni-plugins
+
+- name: Install kubelet
+  ansible.builtin.package:
+    state: latest
+    name:   kubelet
+
+
+

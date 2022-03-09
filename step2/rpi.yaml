@@ -2,17 +2,23 @@
 - hosts: all
   vars:
     settings:
-      nfs_host: 192.168.50.5
-      nfs_torrent_path: "/mnt/drobo-storage/docker-volumes/torrent"
-      nfs_adguard_path: "/mnt/drobo-storage/docker-volumes/adguard"
-      nfs_multi_share_path: "/mnt/drobo-storage/docker-volumes/nfs-share"
-      pimoroni_fans_enabled: "enabled"
+      nfs_host: domain.internal.martinescu.org
+      nfs_multi_share_path: "/storage/k8s"
+      pimoroni_fans_enabled: "disabled"
   roles:
     - common
 
-- hosts: masters
+- hosts: lb_nodes
+  roles:
+    - keepalived
+
+- hosts: primary_master
   roles:
     - kubemaster
+
+- hosts: other_masters
+  roles:
+    - kube-replica-master
 
 - hosts: workers
   roles:
