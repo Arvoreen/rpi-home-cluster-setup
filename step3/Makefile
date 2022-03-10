@@ -1,4 +1,4 @@
-ADDITIONAL_ARGS=-var 'traefik_api_key=$(TRAEFIK_API_KEY)' -var "github_user=$(GH_USER)" -var "github_pat=$(GH_TOKEN)"
+ADDITIONAL_ARGS=-var 'traefik_api_key=$(TRAEFIK_API_KEY)'
 
 apply:
 	cd infrastructure; terraform apply $(ADDITIONAL_ARGS) -auto-approve -var-file ../variables.tfvars

@@ -4,6 +4,7 @@
   register: basic_config_lock
 - import_tasks: filesystem.yml
   when: basic_config_lock.stat.exists == False or fs_reset is defined
+- import_tasks: basic.yml
 - import_tasks: packages.yml
 - import_tasks: networking.yml
 - import_tasks: kubernetes.yml

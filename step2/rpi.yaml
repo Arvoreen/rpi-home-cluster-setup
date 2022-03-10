@@ -23,7 +23,3 @@
 - hosts: workers
   roles:
     - kubeworkers
-
-- hosts: masters
-  roles:
-    - basics

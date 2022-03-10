@@ -4,28 +4,54 @@
 #    name: "{{ inventory_hostname_short }}"
 #    use: alpine
 
-- name: "Build hosts file"
+- name: Build /etc/hosts file
   lineinfile:
     dest: /etc/hosts
     regexp: '.*{{ item }}$'
-    line: "{{hostvars[item]['ansible_default_ipv4']['address']}} {{item}} {{item}}.local"
+    line: "{{ hostvars[item]['ansible_default_ipv4']['address'] }} {{ item }} {{ item.split('.internal.martinescu.org')[0] }}.local {{ item.split('.internal.martinescu.org')[0] }}"
     state: present
   register: etchostsupdate
   when: hostvars[item]['ansible_facts']['default_ipv4'] is defined
   with_items:
     - "{{ groups['all'] }}"
 
+- name: Make sure modules are loaded
+  copy:
+    dest: /etc/modules-load.d/k8s.conf
+    content: |
+      br_netfilter
+
+- name: Make sure br filter is loaded now
+  community.general.modprobe:
+    name: br_netfilter
+    state: present
+
+- name: Set sysctl variables
+  copy:
+    dest: /etc/sysctl.d/kubernetes.conf
+    content: |
+      net.ipv4.ip_forward = 1
+      net.ipv4.ip_nonlocal_bind = 1
+      net.bridge.bridge-nf-call-iptables = 1
+      net.bridge.bridge-nf-call-ip6tables = 1
+
+- name: Set sysctl variables
+  ansible.builtin.shell:
+    cmd: |
+      sysctl -p /etc/sysctl.d/kubernetes.conf
+
+
+- name: Fix localhost
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '^127\.0\.0\.1.*$'
+    line: "127.0.0.1 localhost {{ inventory_hostname_short }} {{ inventory_hostname }}"
+
 - name: Install packages for networking
   ansible.builtin.package:
     name:
       - dbus
       - avahi
-      - kubernetes
-      - kubectl
-      - docker
-      - cni-plugins
-      - kubelet
-      - kubeadm
       - sudo
       - curl
     state: present
@@ -49,18 +75,6 @@
   ansible.builtin.service:
     name: avahi-daemon
     state: restarted
-    enabled: yes
-
-- name: Enable service docker
-  ansible.builtin.service:
-    name: docker
-    state: started
-    enabled: yes
-
-- name: Enable service kubelet
-  ansible.builtin.service:
-    name: kubelet
-    state: started
     enabled: yes
 
 - name: Enable promisc mode for ARP requests

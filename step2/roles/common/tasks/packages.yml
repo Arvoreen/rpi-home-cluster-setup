@@ -8,24 +8,49 @@
    update_cache: yes
 
 - name: Install kubernetes
-  ansible.builtin.package:
-    state: latest
-    name:  kubernetes
+  community.general.apk:
+   state: latest
+   name:  kubernetes
 
-- name: Install docker
-  ansible.builtin.package:
-    state: latest
+- name: remove docker,if present
+  community.general.apk:
+    state: absent
     name:  docker
 
+- name: Install containerd
+  community.general.apk:
+    state: latest
+    name:   containerd, containerd-openrc
+
 - name: Install cni-plugins
-  ansible.builtin.package:
+  community.general.apk:
     state: latest
     name:   cni-plugins
 
 - name: Install kubelet
-  ansible.builtin.package:
+  community.general.apk:
     state: latest
     name:   kubelet
 
+- name: Install kubectl
+  community.general.apk:
+    state: latest
+    name:  kubectl
 
+- name: Install kubeadm
+  community.general.apk:
+    state: latest
+    name: kubeadm
+
+- name: Enable service containerd
+  ansible.builtin.service:
+    name: containerd
+    state: started
+    enabled: yes
+
+- name: Enable service kubelet
+  ansible.builtin.service:
+    name: kubelet
+    state: started
+    enabled: yes
 

@@ -1,15 +1,27 @@
-- name: Install keepalived
+- name: Install keepalived and haproxy
   ansible.builtin.package:
     name:
       - keepalived
+      - haproxy
 
 - name: Create keepalived conf directory
   file:
     path: /etc/keepalived
     state: directory
 
+- name: Create haproxy conf directory
+  file:
+    path: /etc/haproxy
+    state: directory
+
 - name: Modify keepalived.conf
   template: src=keepalived.conf.j2 dest=/etc/keepalived/keepalived.conf
 
+- name: Modify haproxy.cfg
+  template: src=haproxy.cfg.j2 dest=/etc/haproxy/haproxy.cfg
+
 - name: Restart keepalived
   shell: rc-update add keepalived && rc-service keepalived restart
+
+- name: Restart haproxy
+  shell: rc-service haproxy stop && rc-update add haproxy && rc-service haproxy start

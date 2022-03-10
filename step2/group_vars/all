@@ -3,6 +3,7 @@ kubeapiserver: k8s.internal.martinescu.org
 kubernetes_cluster_label: rpi-cluster
 
 keepalived_vip: 192.168.7.58
+pod_network: 10.244.0.0/16
 
 # Kubernetes Kubeadm Cluster Configuration
 kubeadm_config_options:
@@ -12,8 +13,10 @@ kubeadm_config_options:
     apiServer:
         certSANs:
             - "{{ kubeapiserver }}"
-    controlPlaneEndpoint: "{{ kubeapiserver }}:6443"
+    controlPlaneEndpoint: "{{ kubeapiserver }}:8443"
     networking:
-        podSubnet: 10.244.0.0/16
+        podSubnet: "{{ pod_network }}"
     clusterName: "{{ kubernetes_cluster_label }}"
-
+    apiServerCertSANs:
+      - "{{ keepalived_vip }}"
+      - "{{ kubeapiserver }}"

@@ -1,0 +1,49 @@
+global
+    log 127.0.0.1 local0 info
+    maxconn 50000
+    daemon
+    stats socket /tmp/haproxy.stats mode 600 level operator
+    #####
+    # Default cipher list, taken from https://wiki.mozilla.org/Security/Server_Side_TLS
+    # and set dh param value to minimum of 2048
+    #####
+    ssl-default-bind-ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128:AES256:AES:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!3DES
+    tune.ssl.default-dh-param 2048
+
+defaults
+    log     global
+    timeout client  60s
+    timeout connect 10s
+    timeout server  600s
+    option contstats
+    option redispatch
+    option contstats
+    option http-keep-alive
+    option dontlognull
+    log-format "%ci:%cp [%t] %ft %b/%s %Tw/%Tc/%Tt %B %ts %ac/%fc/%bc/%sc/%rc %sq/%bq %sslv %sslc"
+
+# Kubernetes APIServer frontend
+frontend apiserver
+	bind {{ keepalived_vip }}:8443
+	mode tcp
+	option tcplog
+	default_backend apiserver
+
+backend apiserver
+	option httpchk GET /healtz
+	http-check expect status 200
+	mode tcp
+	option tcp-check
+	balance roundrobin 
+    {% for h in peers %}
+        server {{ h }} {{ h }}:6443 check
+    {% endfor %}
+
+listen stats
+    bind :80
+    maxconn 50
+    mode http
+    http-request set-log-level silent
+    stats enable
+    stats hide-version
+    stats uri /

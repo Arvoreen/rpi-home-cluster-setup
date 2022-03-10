@@ -1,0 +1,6 @@
+---
+- name: Set timezone
+  ansible.builtin.shell:
+    cmd: |
+      setup-timezone -z America/New_York
+

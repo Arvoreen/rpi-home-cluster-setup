@@ -3,7 +3,7 @@ global_defs {
 }
 
 vrrp_script CheckK8sMaster {
-    script "curl -khttps://{{ kubeapiserver }}:6443"
+    script "curl -khttps://{{ kubeapiserver }}:8443"
     interval 3
     timeout 9
     fall 2

@@ -1,5 +1,5 @@
 # Variables used for barebone kubernetes setup
-network_subnet    = "192.168.50"
+network_subnet    = "192.168.6"
 
 net_hosts = {
   traefik = "234"
