@@ -17,3 +17,14 @@
     opts: nofail,noatime,nolock,tcp,actimeo=1800
     state: mounted
     boot: yes
+
+- name: fix shared option for /sys
+  ansible.builtin.lineinfile:
+    path: /etc/init.d/sysfs
+    regexp: '^sysfs_opts=.*'
+    line: 'sysfs_opts=nodev,noexec,nosuid,rshared'
+
+- name: remounte /sys as shared
+  ansible.builtin.shell:
+    cmd: |
+      mount --make-shared /sys

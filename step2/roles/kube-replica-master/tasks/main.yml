@@ -55,12 +55,11 @@
     owner: "{{ ansible_ssh_user }}"
     remote_src: yes
 
-- name: Create yaml folder
-  file: name=/etc/kube-yaml state=directory
+- name: Copy calico yaml file
+  copy:
+    src: files/calico.yaml
+    dest: /tmp/calico.yaml
 
-- name: Get flannel yaml file
-  template: src=kube-flannel.yaml.j2 dest=/etc/kube-yaml/flannel.yaml
-
-- name: Create flannel POD network
+- name: Create calico POD network
   ansible.builtin.shell:
-    cmd: kubectl apply -f /etc/kube-yaml/flannel.yaml
+    cmd: kubectl apply -f /tmp/calico.yaml
