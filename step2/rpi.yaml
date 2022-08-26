@@ -8,9 +8,9 @@
   roles:
     - common
 
-- hosts: lb_nodes
-  roles:
-    - keepalived
+#- hosts: lb_nodes
+#  roles:
+#    - keepalived
 
 - hosts: primary_master
   roles:

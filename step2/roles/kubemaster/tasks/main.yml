@@ -76,3 +76,29 @@
     flat: yes
   with_items:
     - admin.conf 
+
+- name: Copy calico yaml file
+  copy:
+    src: files/calico.yaml
+    dest: /tmp/calico.yaml
+
+- name: Copy flannel yaml file
+  copy:
+    src: files/kube-flannel.yml
+    dest: /tmp/kube-flannel.yml
+
+- name: Copy weave  yaml file
+  copy:
+    src: files/weave.yml
+    dest: /tmp/weave.yml
+
+
+#- name: Create flannel POD network
+#  ansible.builtin.shell:
+#    cmd: kubectl apply -f /tmp/kube-flannel.yml
+#- name: Create calico POD network
+#  ansible.builtin.shell:
+#    cmd: kubectl apply -f /tmp/calico.yaml
+- name: Setup weave network
+  ansible.builtin.shell:
+    cmd: kubectl apply -f /tmp/weave.yml

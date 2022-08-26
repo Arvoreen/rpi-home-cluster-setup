@@ -7,7 +7,7 @@
 # - applies headless boot configuration with network interface and ssh agent accepting connections without password
 
 PI_CARD="/dev/disk4"
-ALPINE_BASE_IMAGE="https://dl-cdn.alpinelinux.org/alpine/v3.13/releases/aarch64/alpine-rpi-3.13.2-aarch64.tar.gz"
+ALPINE_BASE_IMAGE="https://dl-cdn.alpinelinux.org/alpine/v3.15/releases/aarch64/alpine-rpi-3.15.3-aarch64.tar.gz"
 # [[ -f /Volumes/RPI0 ]] && echo "Deleting leftover directory"; rm -fr /Volumes/RPI0 || echo "Clean and dandy on the Volumes front"
 [[ ! -f static/alpine-aarch64.tar.gz ]] && wget $ALPINE_BASE_IMAGE -O static/alpine-aarch64.tar.gz || echo "Alpine baseimg already exists"
 sudo diskutil eraseDisk FAT32 RPI MBRFormat $PI_CARD

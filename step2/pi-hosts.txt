@@ -3,12 +3,13 @@ k8sm1.internal.martinescu.org ansible_host=192.168.7.63 if="eth0" lb_role=MASTER
 
 [other_masters]
 k8sm2.internal.martinescu.org ansible_host=192.168.7.62 if="eth0" lb_role=BACKUP priority=80 node_name=k8sm2 
+k8sm3.internal.martinescu.org ansible_host=192.168.7.60 if="eth0" lb_role=BACKUP priority=60 node_name=k8sm3
 
 [workers]
 k8sw1.internal.martinescu.org ansible_host=192.168.7.59
 k8sw2.internal.martinescu.org ansible_host=192.168.7.61
-k8sw3.internal.martinescu.org ansible_host=192.168.7.60
 
 [lb_nodes]
 k8sm1.internal.martinescu.org
 k8sm2.internal.martinescu.org
+k8sm3.internal.martinescu.org

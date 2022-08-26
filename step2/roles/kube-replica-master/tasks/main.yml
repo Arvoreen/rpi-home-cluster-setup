@@ -54,12 +54,3 @@
     dest: "~{{ ansible_ssh_user }}/.kube/config"
     owner: "{{ ansible_ssh_user }}"
     remote_src: yes
-
-- name: Copy calico yaml file
-  copy:
-    src: files/calico.yaml
-    dest: /tmp/calico.yaml
-
-- name: Create calico POD network
-  ansible.builtin.shell:
-    cmd: kubectl apply -f /tmp/calico.yaml

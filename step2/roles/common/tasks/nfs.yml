@@ -24,7 +24,15 @@
     regexp: '^sysfs_opts=.*'
     line: 'sysfs_opts=nodev,noexec,nosuid,rshared'
 
+- name: fix root mount
+  import_tasks: fstab-optpresent.yml 
+  vars:
+    point: / 
+    opt: rshared
+
+
 - name: remounte /sys as shared
   ansible.builtin.shell:
     cmd: |
       mount --make-shared /sys
+      mount --make-shared /
